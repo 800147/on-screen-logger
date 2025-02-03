@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>On-screen logger test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script src="https://800147.github.io/on-screen-logger/logger.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://800147.github.io/document/src/document.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        background-color: var(--bg-color);
+      }
+      main.Document {
+        max-width: 40rem;
+        padding: 0 var(--size-l) var(--size-6xl);
+        margin: 0 auto;
+      }
+      @media (max-width: 42rem) {
+        main.Document {
+          max-width: unset;
+        }
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  </head>
+  <body>
+    <main class="Document">
+      <nav class="Document-Breadcrumbs">
+        <ul>
+          <li><a href="/">800147.github.io</a></li>
+          <li><a href="/tools">tools</a></li>
+          <li><a href="/on-screen-logger">On-screen logger</a></li>
+        </ul>
+      </nav>
+      <h1>On-screen logger test</h1>
+      <figure>
+        <img
+          src="https://800147.github.io/document/images/image.svg"
+          alt="example image"
+          width="480"
+          height="300"
+        />
+        <figcaption>image as an example of some colourful content</figcaption>
+      </figure>
+      <p>
+        The buttons below call console functions. The result will be present in
+        both browser console and screen.
+      </p>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log('console.log')"
+        >
+          console.log
+        </button>
+        <figcaption>console.log('console.log');</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.info('console.info')"
+        >
+          console.info
+        </button>
+        <figcaption>console.info('console.info');</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--yellow-color)"
+          onclick="console.warn('console.warn')"
+        >
+          console.warn
+        </button>
+        <figcaption>console.warn('console.warn');</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--red-color)"
+          onclick="console.error('console.error')"
+        >
+          console.error
+        </button>
+        <figcaption>console.error('console.error');</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log('one', 2, 'tree', 4)"
+        >
+          multiple arguments
+        </button>
+        <figcaption>console.log('one', 2, 'tree', 4);</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log(['one', 2, 'tree', 4])"
+        >
+          array
+        </button>
+        <figcaption>console.log(['one', 2, 'tree', 4]);</figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log({one: 1, two: [2], three: {three: 3}})"
+        >
+          object
+        </button>
+        <figcaption>
+          console.log({one: 1, two: [2], three: {three: 3}});
+        </figcaption>
+      </figure>
+      <figure>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log(new Date())"
+        >
+          date
+        </button>
+        <figcaption>console.log(new Date());</figcaption>
+      </figure>
+      <figure>
+        <button type="button" onclick="console.clear()">console.clear</button>
+        <figcaption>console.clear();</figcaption>
+      </figure>
+    </main>
+  </body>
+</html>
