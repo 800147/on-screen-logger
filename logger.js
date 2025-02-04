@@ -1,12 +1,13 @@
-"use strict";
+(() => {
+  "use strict";
 
-const STYLE = `
+  const STYLE = `
 .OSLogger {
   position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
 .OSLogger-Record {
@@ -39,145 +40,177 @@ const STYLE = `
 }
 `;
 
-const loggerRoot = Object.assign(document.createElement("div"), {
-  className: "OSLogger",
-  inert: true,
-});
-
-const scrollToBottom = () => loggerRoot.scroll(0, loggerRoot.scrollHeight);
-
-const oldConsole = { ...console };
-
-const print = (args, { unsupported, type = "log" } = {}) => {
-  if (unsupported) {
-    type = "warn";
-  }
-
-  const p = Object.assign(document.createElement("p"), {
-    className: `OSLogger-Record OSLogger-Record_type_${type}`,
+  const loggerRoot = Object.assign(document.createElement("div"), {
+    className: "OSLogger",
+    inert: true,
   });
 
-  const content = Object.assign(document.createElement("span"), {
-    className: "OSLogger-RecordContent",
-  });
+  const scrollToBottom = () => loggerRoot.scroll(0, loggerRoot.scrollHeight);
 
-  p.appendChild(content);
+  const oldConsole = { ...console };
 
-  if (unsupported) {
-    content.appendChild(
-      document.createTextNode(`UNSUPPORTED CALL: console.${unsupported}(`)
-    );
-  }
-
-  args.forEach((arg, i) => {
-    if (i) {
-      content.appendChild(document.createTextNode(unsupported ? ", " : " "));
+  const print = (args, { unsupported, type = "log" } = {}) => {
+    if (unsupported) {
+      type = "warn";
     }
 
-    if (Array.isArray(arg)) {
+    const p = Object.assign(document.createElement("p"), {
+      className: `OSLogger-Record OSLogger-Record_type_${type}`,
+    });
+
+    const content = Object.assign(document.createElement("span"), {
+      className: "OSLogger-RecordContent",
+    });
+
+    p.appendChild(content);
+
+    if (unsupported) {
       content.appendChild(
-        Object.assign(document.createElement("span"), {
-          className: "OSLogger-Array",
-          textContent: JSON.stringify(arg),
-        })
-      );
-    } else if (typeof arg === "string") {
-      content.appendChild(
-        Object.assign(document.createElement("span"), {
-          className: "OSLogger-String",
-          textContent: unsupported ? JSON.stringify(arg) : arg,
-        })
-      );
-    } else if (typeof arg === "number") {
-      content.appendChild(
-        Object.assign(document.createElement("span"), {
-          className: "OSLogger-Number",
-          textContent: arg,
-        })
-      );
-    } else if (String(arg) === "[object Object]") {
-      content.appendChild(
-        Object.assign(document.createElement("span"), {
-          className: "OSLogger-Object",
-          textContent: JSON.stringify(arg),
-        })
-      );
-    } else {
-      content.appendChild(
-        Object.assign(document.createElement("span"), {
-          className: "OSLogger-Object",
-          textContent: String(arg),
-        })
+        document.createTextNode(`UNSUPPORTED CALL: console.${unsupported}(`)
       );
     }
-  });
 
-  if (unsupported) {
-    content.appendChild(document.createTextNode(")"));
-  }
+    args.forEach((arg, i) => {
+      if (i) {
+        content.appendChild(document.createTextNode(unsupported ? ", " : " "));
+      }
 
-  loggerRoot.appendChild(p);
-  scrollToBottom();
-};
+      if (Array.isArray(arg)) {
+        content.appendChild(
+          Object.assign(document.createElement("span"), {
+            className: "OSLogger-Array",
+            textContent: JSON.stringify(arg),
+          })
+        );
+      } else if (typeof arg === "string") {
+        content.appendChild(
+          Object.assign(document.createElement("span"), {
+            className: "OSLogger-String",
+            textContent: unsupported ? JSON.stringify(arg) : arg,
+          })
+        );
+      } else if (typeof arg === "number") {
+        content.appendChild(
+          Object.assign(document.createElement("span"), {
+            className: "OSLogger-Number",
+            textContent: arg,
+          })
+        );
+      } else if (String(arg) === "[object Object]") {
+        content.appendChild(
+          Object.assign(document.createElement("span"), {
+            className: "OSLogger-Object",
+            textContent: JSON.stringify(arg),
+          })
+        );
+      } else {
+        content.appendChild(
+          Object.assign(document.createElement("span"), {
+            className: "OSLogger-Object",
+            textContent: String(arg),
+          })
+        );
+      }
+    });
 
-const unsupported =
-  (funcName) =>
-  (...args) => {
-    print(args, { unsupported: funcName });
-    oldConsole[funcName].apply(console, args);
+    if (unsupported) {
+      content.appendChild(document.createTextNode(")"));
+    }
+
+    loggerRoot.appendChild(p);
+    scrollToBottom();
   };
 
-Object.assign(console, {
-  log: (...args) => {
-    print(args, { type: "log" });
-    oldConsole.log.apply(console, args);
-  },
-  error: (...args) => {
-    print(args, { type: "error" });
-    oldConsole.error.apply(console, args);
-  },
-  info: (...args) => {
-    print(args, { type: "info" });
-    oldConsole.info.apply(console, args);
-  },
-  warn: (...args) => {
-    print(args, { type: "warn" });
-    oldConsole.warn.apply(console, args);
-  },
-  clear: (...args) => {
-    loggerRoot.textContent = "";
-    oldConsole.clear.apply(console, args);
-  },
+  const unsupported =
+    (funcName) =>
+    (...args) => {
+      print(args, { unsupported: funcName });
+      oldConsole[funcName].apply(console, args);
+    };
 
-  assert: unsupported("assert"),
-  count: unsupported("count"),
-  countReset: unsupported("countReset"),
-  debug: unsupported("debug"),
-  dir: unsupported("dir"),
-  dirxml: unsupported("dirxml"),
-  group: unsupported("group"),
-  groupCollapsed: unsupported("groupCollapsed"),
-  groupEnd: unsupported("groupEnd"),
-  table: unsupported("table"),
-  time: unsupported("time"),
-  timeEnd: unsupported("timeEnd"),
-  timeLog: unsupported("timeLog"),
-  timeStamp: unsupported("timeStamp"),
-  trace: unsupported("trace"),
-});
+  Object.assign(console, {
+    log: (...args) => {
+      print(args, { type: "log" });
+      oldConsole.log.apply(console, args);
+    },
+    error: (...args) => {
+      print(args, { type: "error" });
+      oldConsole.error.apply(console, args);
+    },
+    info: (...args) => {
+      print(args, { type: "info" });
+      oldConsole.info.apply(console, args);
+    },
+    warn: (...args) => {
+      print(args, { type: "warn" });
+      oldConsole.warn.apply(console, args);
+    },
+    clear: (...args) => {
+      loggerRoot.textContent = "";
+      oldConsole.clear.apply(console, args);
+    },
 
-const onLoad = () => {
-  document.body.appendChild(loggerRoot);
-  document.head.appendChild(
-    Object.assign(document.createElement("style"), { textContent: STYLE })
-  );
+    assert: unsupported("assert"),
+    count: unsupported("count"),
+    countReset: unsupported("countReset"),
+    debug: unsupported("debug"),
+    dir: unsupported("dir"),
+    dirxml: unsupported("dirxml"),
+    group: unsupported("group"),
+    groupCollapsed: unsupported("groupCollapsed"),
+    groupEnd: unsupported("groupEnd"),
+    table: unsupported("table"),
+    time: unsupported("time"),
+    timeEnd: unsupported("timeEnd"),
+    timeLog: unsupported("timeLog"),
+    timeStamp: unsupported("timeStamp"),
+    trace: unsupported("trace"),
+  });
 
-  new ResizeObserver(scrollToBottom).observe(loggerRoot);
-  scrollToBottom();
-};
+  const onLoad = () => {
+    document.body.appendChild(loggerRoot);
+    document.head.appendChild(
+      Object.assign(document.createElement("style"), { textContent: STYLE })
+    );
 
-if (document.readyState === "loading") {
-  window.addEventListener("DOMContentLoaded", onLoad);
-} else {
-  onLoad();
-}
+    new ResizeObserver(scrollToBottom).observe(loggerRoot);
+    scrollToBottom();
+  };
+
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", onLoad);
+  } else {
+    onLoad();
+  }
+
+  const oldWindowOnError = window.onerror;
+
+  window.onerror = (error, url, line, column, ...rest) => {
+    print(
+      [
+        `Uncaught ${error} [${url.replace(
+          new RegExp(`^${window.location.origin}/`),
+          ""
+        )}:${line}:${column}]`,
+      ],
+      { type: "error" }
+    );
+
+    oldWindowOnError?.call(window, error, url, line, column, ...rest);
+  };
+
+  window.addEventListener("unhandledrejection", ({ reason }) => {
+    const { stack } = reason;
+    print(
+      [
+        `Uncaught (in promise) ${reason}\n${stack.replace(
+          new RegExp(`^${reason}\n|${window.location.origin}/`, "g"),
+          ""
+        )}`,
+      ],
+      {
+        type: "error",
+      }
+    );
+  });
+})();
