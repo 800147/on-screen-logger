@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>On-screen logger — web tools from 800147.github.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <meta
+      name="description"
+      content="On-screen logger shows your console logs right on the screen"
+    />
+    <link
+      rel="stylesheet"
+      href="https://800147.github.io/document/src/document.css"
+    />
+    <script type="module">
+      // https://highlightjs.org/usage/
+      import hljs from "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/es/highlight.min.js";
+      hljs.highlightAll();
+    </script>
+  </head>
+  <body class="Document">
+    <nav class="Document-Breadcrumbs">
+      <ul>
+        <li><a href="/">800147.github.io</a></li>
+        <li><a href="/tools">tools</a></li>
+      </ul>
+    </nav>
+    <main>
+      <h1>On-screen logger</h1>
+
+      <h2>About</h2>
+      <p>
+        On-screen logger lets you see your console logs right on the screen. It
+        can be helpful for the platforms that hard to debug like WebViews inside
+        other apps.
+      </p>
+      <p>
+        Only five functions are supported: <code>log</code>, <code>info</code>,
+        <code>warn</code>, <code>error</code> and <code>clear</code>.
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/console#using_string_substitutions"
+          target="_blank"
+          >String substitutions</a
+        >
+        are not supported.
+      </p>
+      <figure>
+        <img src="./on-screen-logger.png" alt="" width="1280" height="720" />
+        <figcaption>On-screen logger on Telegram WebView</figcaption>
+      </figure>
+
+      <h2>Guide</h2>
+      <p>
+        Just add the script from
+        <code>https://800147.github.io/on-screen-logger/logger.js</code> before
+        any other scripts in your html file (no additional attributes — no type
+        module, no defer, no async).
+      </p>
+      <pre><code class="language-html">&lt;!DOCTYPE html>
+&lt;html lang="en">
+  &lt;head>
+    &lt;meta charset="utf-8">
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0">
+    &lt;title>Page title&lt;/title>
+    &lt;script src="https://800147.github.io/on-screen-logger/logger.js">&lt;/script>
+    &lt;script>
+      console.log('Here I am at the screen!');
+    &lt;/script>
+  &lt;/head>
+  &lt;body>&lt;/body>
+&lt;/html></code></pre>
+
+      <h2>Example</h2>
+      <p>Here is the example page that uses On-screen logger:</p>
+      <figure>
+        <a
+          class="Document-Button"
+          href="./example"
+          style="--color: var(--blue-color)"
+        >
+          example page
+        </a>
+      </figure>
+
+      <h2>Sources</h2>
+      <p>The sources can be found on Github:</p>
+      <figure>
+        <a
+          class="Document-Button"
+          href="https://github.com/800147/on-screen-logger/blob/main/logger.js"
+        >
+          sources on Github
+        </a>
+      </figure>
+    </main>
+  </body>
+</html>
