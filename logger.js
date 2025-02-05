@@ -8,6 +8,7 @@
   overflow: hidden;
   pointer-events: none;
   opacity: 0.65;
+  z-index: 9999;
 }
 
 .OSLogger-Record {
