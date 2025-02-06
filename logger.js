@@ -2,7 +2,7 @@
   "use strict";
 
   const STYLE = `
-.OSLogger {
+:where(.OSLogger) {
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -11,13 +11,14 @@
   z-index: 9999;
 }
 
-.OSLogger-Record {
-  margin: 0.5rem;
-  font: 0.75rem / 1rem monospace;
+:where(.OSLogger-Record) {
+  font: 0.75rem/1.5 monospace;
+  margin: 0.5em;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
-.OSLogger-RecordContent {
+:where(.OSLogger-RecordContent) {
   box-decoration-break: clone;
   border-radius: 0.25em;
   padding: 0 0.25em;
@@ -26,17 +27,17 @@
   background-color: white;
 }
 
-:where(.OSLogger-Record_type_warn) .OSLogger-RecordContent {
+:where(.OSLogger-Record_type_warn .OSLogger-RecordContent) {
   color: brown;
   background-color: cornsilk;
 }
 
-:where(.OSLogger-Record_type_error) .OSLogger-RecordContent {
+:where(.OSLogger-Record_type_error .OSLogger-RecordContent) {
   color: darkred;
   background-color: pink;
 }
 
-.OSLogger-Number {
+:where(.OSLogger-Number) {
   color: darkgreen;
 }
 `;
