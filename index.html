@@ -17,7 +17,7 @@
     />
     <script type="module">
       // https://highlightjs.org/usage/
-      import hljs from "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/es/highlight.min.js";
+      import hljs from "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/es/highlight.min.js";
       hljs.highlightAll();
     </script>
   </head>
@@ -72,6 +72,17 @@
   &lt;/head>
   &lt;body>&lt;/body>
 &lt;/html></code></pre>
+
+      <h3>Styling</h3>
+      <p>
+        Default styles are written with low specificity selectors so you can
+        reassign them with class selector.
+      </p>
+      <pre><code class="language-css">.OSLogger {
+  bottom: 50%;
+  font-size: 20px;
+  opacity: 0.8;
+}</code></pre>
 
       <h2>Example</h2>
       <p>Here is the example page that uses On-screen logger:</p>

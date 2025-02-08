@@ -8,11 +8,12 @@
   overflow: hidden;
   pointer-events: none;
   opacity: 0.65;
+  font: 0.75rem/1.5 monospace;
   z-index: 9999;
 }
 
 :where(.OSLogger-Record) {
-  font: 0.75rem/1.5 monospace;
+  font: inherit;
   margin: 0.5em;
   white-space: pre-wrap;
   word-break: break-word;
