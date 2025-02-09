@@ -37,16 +37,6 @@
         can be helpful for the platforms that hard to debug like WebViews inside
         other apps.
       </p>
-      <p>
-        Only five functions are supported: <code>log</code>, <code>info</code>,
-        <code>warn</code>, <code>error</code> and <code>clear</code>.
-        <a
-          href="https://developer.mozilla.org/en-US/docs/Web/API/console#using_string_substitutions"
-          target="_blank"
-          >String substitutions</a
-        >
-        are not supported.
-      </p>
       <figure>
         <img src="./on-screen-logger.png" alt="" width="1280" height="720" />
         <figcaption>On-screen logger on Telegram WebView</figcaption>
@@ -59,19 +49,27 @@
         any other scripts in your html file (no additional attributes — no type
         module, no defer, no async).
       </p>
-      <pre><code class="language-html">&lt;!DOCTYPE html>
-&lt;html lang="en">
-  &lt;head>
-    &lt;meta charset="utf-8">
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0">
-    &lt;title>Page title&lt;/title>
-    &lt;script src="https://800147.github.io/on-screen-logger/logger.js">&lt;/script>
-    &lt;script>
-      console.log('Here I am at the screen!');
-    &lt;/script>
-  &lt;/head>
-  &lt;body>&lt;/body>
-&lt;/html></code></pre>
+      <pre><code class="language-html">&lt;script src="https://800147.github.io/on-screen-logger/logger.js">&lt;/script>
+&lt;script>
+  console.log('Here I am at the screen!');
+&lt;/script></code></pre>
+
+      <h3>Supported functions</h3>
+      <ul>
+        <li>console.log</li>
+        <li>console.info</li>
+        <li>console.warn</li>
+        <li>console.error</li>
+        <li>console.clear</li>
+      </ul>
+      <p>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/console#using_string_substitutions"
+          target="_blank"
+          >String substitutions</a
+        >
+        are not supported.
+      </p>
 
       <h3>Styling</h3>
       <p>
