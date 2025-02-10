@@ -131,6 +131,8 @@
       oldConsole[funcName].apply(console, args);
     };
 
+  const counts = Object.create(null);
+
   Object.assign(console, {
     log: (...args) => {
       print(args, { type: "log" });
@@ -152,10 +154,30 @@
       loggerRoot.textContent = "";
       oldConsole.clear.apply(console, args);
     },
+    assert: (...args) => {
+      const [flag, ...rest] = args;
+      if (!flag) {
+        print(["Assertion failed:", ...rest], { type: "error" });
+      }
+      oldConsole.assert.apply(console, args);
+    },
+    count: (...args) => {
+      const label = args[0] ?? "dafault";
+      counts[label] = (counts[label] ?? 0) + 1;
+      print([`${label}:`, counts[label]]);
+      oldConsole.count.apply(console, args);
+    },
+    countReset: (...args) => {
+      const label = args[0] ?? "dafault";
+      if (counts[label] === undefined) {
+        print([`Counter "${label}" doesn't exist`], { type: "warn" });
+      } else {
+        counts[label] = 0;
+        print([`${label}:`, counts[label]]);
+      }
+      oldConsole.countReset.apply(console, args);
+    },
 
-    assert: unsupported("assert"),
-    count: unsupported("count"),
-    countReset: unsupported("countReset"),
     debug: unsupported("debug"),
     dir: unsupported("dir"),
     dirxml: unsupported("dirxml"),
