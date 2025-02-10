@@ -132,6 +132,8 @@
     };
 
   const counts = Object.create(null);
+  const timers = Object.create(null);
+  const round1000 = (num) => Math.round(num * 1000) / 1000;
 
   Object.assign(console, {
     log: (...args) => {
@@ -177,6 +179,36 @@
       }
       oldConsole.countReset.apply(console, args);
     },
+    time: (...args) => {
+      const label = args[0] ?? "dafault";
+      if (timers[label] !== undefined) {
+        print([`Timer "${label}" already exists`], { type: "warn" });
+      } else {
+        timers[label] = performance.now();
+      }
+      oldConsole.time.apply(console, args);
+    },
+    timeLog: (...args) => {
+      const label = args[0] ?? "dafault";
+      if (timers[label] === undefined) {
+        print([`Timer "${label}" doesn't exist`], { type: "warn" });
+      } else {
+        print([`${label}: ${round1000(performance.now() - timers[label])}ms`]);
+      }
+      oldConsole.timeLog.apply(console, args);
+    },
+    timeEnd: (...args) => {
+      const label = args[0] ?? "dafault";
+      if (timers[label] === undefined) {
+        print([`Timer "${label}" doesn't exist`], { type: "warn" });
+      } else {
+        print([
+          `${label}: ${round1000(performance.now() - timers[label])}ms — ended`,
+        ]);
+        delete timers[label];
+      }
+      oldConsole.timeEnd.apply(console, args);
+    },
 
     debug: unsupported("debug"),
     dir: unsupported("dir"),
@@ -185,9 +217,6 @@
     groupCollapsed: unsupported("groupCollapsed"),
     groupEnd: unsupported("groupEnd"),
     table: unsupported("table"),
-    time: unsupported("time"),
-    timeEnd: unsupported("timeEnd"),
-    timeLog: unsupported("timeLog"),
     timeStamp: unsupported("timeStamp"),
     trace: unsupported("trace"),
   });
