@@ -52,27 +52,20 @@
         The buttons below call console functions. The result will be present in
         both browser console and screen.
       </p>
-      <figure>
-        <button
-          type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.log('console.log')"
-        >
+
+      <p>
+        <button type="button" onclick="console.log('console.log')">
           console.log
         </button>
-        <figcaption>console.log('console.log');</figcaption>
-      </figure>
-      <figure>
-        <button
-          type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.info('console.info')"
-        >
+        — console.log('console.log');
+      </p>
+      <p>
+        <button type="button" onclick="console.info('console.info')">
           console.info
         </button>
-        <figcaption>console.info('console.info');</figcaption>
-      </figure>
-      <figure>
+        — console.info('console.info');
+      </p>
+      <p>
         <button
           type="button"
           style="--color: var(--yellow-color)"
@@ -80,9 +73,9 @@
         >
           console.warn
         </button>
-        <figcaption>console.warn('console.warn');</figcaption>
-      </figure>
-      <figure>
+        — console.warn('console.warn');
+      </p>
+      <p>
         <button
           type="button"
           style="--color: var(--red-color)"
@@ -90,54 +83,81 @@
         >
           console.error
         </button>
-        <figcaption>console.error('console.error');</figcaption>
-      </figure>
-      <figure>
-        <button
-          type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.log('one', 2, 'tree', 4)"
-        >
+        — console.error('console.error');
+      </p>
+      <hr />
+      <p>
+        <button type="button" onclick="console.log('one', 2, 'tree', 4)">
           multiple arguments
         </button>
-        <figcaption>console.log('one', 2, 'tree', 4);</figcaption>
-      </figure>
-      <figure>
-        <button
-          type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.log(['one', 2, 'tree', 4])"
-        >
+        — console.log('one', 2, 'tree', 4);
+      </p>
+      <p>
+        <button type="button" onclick="console.log(['one', 2, 'tree', 4])">
           array
         </button>
-        <figcaption>console.log(['one', 2, 'tree', 4]);</figcaption>
-      </figure>
-      <figure>
+        — console.log(['one', 2, 'tree', 4]);
+      </p>
+      <p>
         <button
           type="button"
-          style="--color: var(--blue-color)"
           onclick="console.log({one: 1, two: [2], three: {three: 3}})"
         >
           object
         </button>
-        <figcaption>
-          console.log({one: 1, two: [2], three: {three: 3}});
-        </figcaption>
-      </figure>
-      <figure>
+        — console.log({one: 1, two: [2], three: {three: 3}});
+      </p>
+      <p>
+        <button type="button" onclick="console.log(new Date())">date</button>
+        — console.log(new Date());
+      </p>
+      <hr />
+      <p>
+        <button type="button" onclick="console.assert(0 / 0, 'Not a number')">
+          console.assert
+        </button>
+        — console.assert(0 / 0, 'Not a number');
+      </p>
+      <hr />
+      <p>
+        <button type="button" onclick="console.count()">console.count</button>
+        — console.count();
+      </p>
+      <p>
+        <button type="button" onclick="console.countReset()">
+          console.countReset
+        </button>
+        — console.countReset();
+      </p>
+      <hr />
+
+      <p>
+        <button type="button" onclick="console.time()">console.time</button>
+        — console.time();
+      </p>
+      <p>
+        <button type="button" onclick="console.timeLog()">
+          console.timeLog
+        </button>
+        — console.timeLog();
+      </p>
+      <p>
+        <button type="button" onclick="console.timeEnd()">
+          console.timeEnd
+        </button>
+        — console.timeEnd();
+      </p>
+      <hr />
+      <p>
         <button
           type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.log(new Date())"
+          style="--color: var(--red-color)"
+          onclick="console.clear()"
         >
-          date
+          console.clear
         </button>
-        <figcaption>console.log(new Date());</figcaption>
-      </figure>
-      <figure>
-        <button type="button" onclick="console.clear()">console.clear</button>
-        <figcaption>console.clear();</figcaption>
-      </figure>
+        — console.clear();
+      </p>
     </main>
   </body>
 </html>

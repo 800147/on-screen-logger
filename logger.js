@@ -1,3 +1,5 @@
+// about: https://800147.github.io/on-screen-logger/
+
 (() => {
   "use strict";
 
@@ -49,6 +51,7 @@
   });
 
   const scrollToBottom = () => loggerRoot.scroll(0, loggerRoot.scrollHeight);
+  const round1000 = (num) => Math.round(num * 1000) / 1000;
 
   const oldConsole = { ...console };
 
@@ -133,7 +136,6 @@
 
   const counts = Object.create(null);
   const timers = Object.create(null);
-  const round1000 = (num) => Math.round(num * 1000) / 1000;
 
   Object.assign(console, {
     log: (...args) => {
