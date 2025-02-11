@@ -1,5 +1,4 @@
 // about: https://800147.github.io/on-screen-logger/
-
 (() => {
   "use strict";
 
@@ -9,19 +8,20 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.65;
+  opacity: 0.7;
   font: 0.75rem/1.5 monospace;
   z-index: 9999;
+  scroll-behavior: smooth;
 }
 
-:where(.OSLogger-Record) {
+.OSLogger-Record {
   font: inherit;
   margin: 0.5em;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-:where(.OSLogger-RecordContent) {
+.OSLogger-RecordContent {
   box-decoration-break: clone;
   border-radius: 0.25em;
   padding: 0 0.25em;
@@ -30,30 +30,30 @@
   background-color: white;
 }
 
-:where(.OSLogger-Record_type_warn .OSLogger-RecordContent) {
+.OSLogger-Record_type_warn .OSLogger-RecordContent {
   color: brown;
   background-color: cornsilk;
 }
 
-:where(.OSLogger-Record_type_error .OSLogger-RecordContent) {
+.OSLogger-Record_type_error .OSLogger-RecordContent {
   color: darkred;
   background-color: pink;
 }
 
-:where(.OSLogger-Number) {
+.OSLogger-Number {
   color: darkgreen;
 }
 
-:where(.OSLogger-Group > :first-child) {
+.OSLogger-Group > :first-child {
   margin-left: 0.5em;
 }
 
-:where(.OSLogger-Group) {
+.OSLogger-Group {
   position: relative;
   margin-left: 0;
 }
 
-:where(.OSLogger-Group)::before, :where(.OSLogger-Group)::after {
+.OSLogger-Group::before, .OSLogger-Group::after {
   content: '';
   display: block;
   width: 0.125em;
@@ -63,38 +63,92 @@
   background-color: black;
 }
 
-:where(.OSLogger-Group)::after {
+.OSLogger-Group::after {
   inset: 0.5em auto 0.25em 0.5em;
   background-color: white;
 }
 
-:where(.OSLogger-Group > :not(:first-child)) {
+.OSLogger-Group > :not(:first-child) {
   margin-left: 1.5em;
 }
 
-:where(.OSLogger-Group > .OSLogger-Group:not(:first-child)) {
+.OSLogger-Group > .OSLogger-Group:not(:first-child) {
   margin-left: 1em;
 }
 
+.OSLogger-Table {
+  background-color: white;
+  border-radius: 0.25em;
+  margin: 0.5em;
+  cellpadding: 0px;
+  cellspacng: 0px;
+  border: none;
+  border-spacing: 0;
+}
+
+.OSLogger-Table :is(td, th) {
+  padding: 0 0.25em;
+}
+
+.OSLogger-Table th {
+  font-weight: bold;
+}
+
+:where(.OSLogger-Table :is(td, th)) {
+  color: black;
+  font: inherit;
+}
+
+.OSLogger-Table th {
+  text-align: left;
+}
+
+.OSLogger-Table td.OSLogger-Number {
+  text-align: right;
+}
 `;
 
   const loggerRoot = Object.assign(document.createElement("div"), {
     className: "OSLogger",
     inert: true,
   });
-  const oldConsole = { ...console };
+  const original = { ...console };
   const counts = Object.create(null);
   const timers = Object.create(null);
   let slot = loggerRoot;
 
   const scrollToBottom = () => loggerRoot.scroll(0, loggerRoot.scrollHeight);
   const round1000 = (num) => Math.round(num * 1000) / 1000;
-  const unsupported =
-    (funcName) =>
-    (...args) => {
-      print(args, { unsupported: funcName });
-      oldConsole[funcName]?.apply(console, args);
-    };
+  const isIterable = (obj) => {
+    if (typeof obj === "string") {
+      return false;
+    }
+    try {
+      return Boolean(Object.keys(obj)?.length);
+    } catch (e) {
+      return false;
+    }
+  };
+  const getView = (arg, unsupported) => {
+    if (arg === null) {
+      return ["null", "Null"];
+    } else if (arg === undefined) {
+      return ["undefined", "Undefined"];
+    } else if (Array.isArray(arg)) {
+      return [JSON.stringify(arg), "Array"];
+    } else if (typeof arg === "string") {
+      return [unsupported ? JSON.stringify(arg) : arg, "String"];
+    } else if (typeof arg === "number") {
+      return [arg, "Number"];
+    } else if (
+      typeof arg?.toString !== "function" ||
+      String(arg) === "[object Object]"
+    ) {
+      return [JSON.stringify(arg), "Object"];
+    } else {
+      return [String(arg), "Object"];
+    }
+  };
 
   const print = (args, { unsupported, type = "log" } = {}) => {
     if (unsupported) {
@@ -122,42 +176,13 @@
         content.appendChild(document.createTextNode(unsupported ? ", " : " "));
       }
 
-      if (Array.isArray(arg)) {
-        content.appendChild(
-          Object.assign(document.createElement("span"), {
-            className: "OSLogger-Array",
-            textContent: JSON.stringify(arg),
-          })
-        );
-      } else if (typeof arg === "string") {
-        content.appendChild(
-          Object.assign(document.createElement("span"), {
-            className: "OSLogger-String",
-            textContent: unsupported ? JSON.stringify(arg) : arg,
-          })
-        );
-      } else if (typeof arg === "number") {
-        content.appendChild(
-          Object.assign(document.createElement("span"), {
-            className: "OSLogger-Number",
-            textContent: arg,
-          })
-        );
-      } else if (String(arg) === "[object Object]") {
-        content.appendChild(
-          Object.assign(document.createElement("span"), {
-            className: "OSLogger-Object",
-            textContent: JSON.stringify(arg),
-          })
-        );
-      } else {
-        content.appendChild(
-          Object.assign(document.createElement("span"), {
-            className: "OSLogger-Object",
-            textContent: String(arg),
-          })
-        );
-      }
+      const [textContent, type] = getView(arg, unsupported);
+      content.appendChild(
+        Object.assign(document.createElement("span"), {
+          className: `OSLogger-${type}`,
+          textContent,
+        })
+      );
     });
 
     if (unsupported) {
@@ -194,90 +219,224 @@
     print([`Group${groupName}${collapseMessage}`]);
   };
 
-  Object.assign(console, {
-    log: (...args) => {
-      print(args, { type: "log" });
-      oldConsole.log?.apply(console, args);
-    },
-    error: (...args) => {
-      print(args, { type: "error" });
-      oldConsole.error?.apply(console, args);
-    },
-    info: (...args) => {
-      print(args, { type: "info" });
-      oldConsole.info?.apply(console, args);
-    },
-    warn: (...args) => {
-      print(args, { type: "warn" });
-      oldConsole.warn?.apply(console, args);
-    },
-    clear: (...args) => {
-      loggerRoot.textContent = "";
-      slot = loggerRoot;
-      oldConsole.clear?.apply(console, args);
-    },
-    assert: (...args) => {
-      const [flag, ...rest] = args;
-      if (!flag) {
-        print(["Assertion failed:", ...rest], { type: "error" });
-      }
-      oldConsole.assert?.apply(console, args);
-    },
-    count: (...args) => {
-      const label = args[0] ?? "dafault";
-      counts[label] = (counts[label] ?? 0) + 1;
-      print([`${label}:`, counts[label]]);
-      oldConsole.count?.apply(console, args);
-    },
-    countReset: (...args) => {
-      const label = args[0] ?? "dafault";
-      if (counts[label] === undefined) {
-        print([`Counter "${label}" doesn't exist`], { type: "warn" });
-      } else {
-        counts[label] = 0;
+  Object.assign(
+    console,
+    Object.fromEntries(
+      Object.entries(original).map(([funcName, func]) => [
+        funcName,
+        (...args) => {
+          print(args, { unsupported: funcName });
+          func.apply(console, args);
+        },
+      ])
+    ),
+    {
+      log: (...args) => {
+        print(args, { type: "log" });
+        original.log?.apply(console, args);
+      },
+      error: (...args) => {
+        print(args, { type: "error" });
+        original.error?.apply(console, args);
+      },
+      info: (...args) => {
+        print(args, { type: "info" });
+        original.info?.apply(console, args);
+      },
+      warn: (...args) => {
+        print(args, { type: "warn" });
+        original.warn?.apply(console, args);
+      },
+      clear: (...args) => {
+        loggerRoot.textContent = "";
+        slot = loggerRoot;
+        original.clear?.apply(console, args);
+      },
+      assert: (...args) => {
+        const [flag, ...rest] = args;
+        if (!flag) {
+          print(["Assertion failed:", ...rest], { type: "error" });
+        }
+        original.assert?.apply(console, args);
+      },
+      count: (...args) => {
+        const label = args[0] ?? "dafault";
+        counts[label] = (counts[label] ?? 0) + 1;
         print([`${label}:`, counts[label]]);
-      }
-      oldConsole.countReset?.apply(console, args);
-    },
-    time: (...args) => {
-      const label = args[0] ?? "dafault";
-      if (timers[label] !== undefined) {
-        print([`Timer "${label}" already exists`], { type: "warn" });
-      } else {
-        timers[label] = performance.now();
-      }
-      oldConsole.time?.apply(console, args);
-    },
-    timeLog: (...args) => {
-      timeLog(args[0]);
-      oldConsole.timeLog?.apply(console, args);
-    },
-    timeEnd: (...args) => {
-      timeLog(args[0], true);
-      oldConsole.timeEnd?.apply(console, args);
-    },
-    group: (...args) => {
-      group(args[0]);
-      oldConsole.group?.apply(console, args);
-    },
-    groupCollapsed: (...args) => {
-      group(args[0], true);
-      oldConsole.groupCollapsed?.apply(console, args);
-    },
-    groupEnd: (...args) => {
-      if (slot !== loggerRoot) {
-        slot = slot.parentElement;
-      }
-      oldConsole.groupEnd?.apply(console, args);
-    },
+        original.count?.apply(console, args);
+      },
+      countReset: (...args) => {
+        const label = args[0] ?? "dafault";
+        if (counts[label] === undefined) {
+          print([`Counter "${label}" doesn't exist`], { type: "warn" });
+        } else {
+          counts[label] = 0;
+          print([`${label}:`, counts[label]]);
+        }
+        original.countReset?.apply(console, args);
+      },
+      time: (...args) => {
+        const label = args[0] ?? "dafault";
+        if (timers[label] !== undefined) {
+          print([`Timer "${label}" already exists`], { type: "warn" });
+        } else {
+          timers[label] = performance.now();
+        }
+        original.time?.apply(console, args);
+      },
+      timeLog: (...args) => {
+        timeLog(args[0]);
+        original.timeLog?.apply(console, args);
+      },
+      timeEnd: (...args) => {
+        timeLog(args[0], true);
+        original.timeEnd?.apply(console, args);
+      },
+      group: (...args) => {
+        group(args[0]);
+        original.group?.apply(console, args);
+      },
+      groupCollapsed: (...args) => {
+        group(args[0], true);
+        original.groupCollapsed?.apply(console, args);
+      },
+      groupEnd: (...args) => {
+        if (slot !== loggerRoot) {
+          slot = slot.parentElement;
+        }
+        original.groupEnd?.apply(console, args);
+      },
+      table: (...args) => {
+        let [data, keys] = args;
+        if (data instanceof Set) {
+          data = Array.from(data);
+        }
+        if (data instanceof Map) {
+          data = Array.from(data).map(([k, v]) => ({
+            "(key)": k,
+            "(value)": v,
+          }));
+        }
+        if (!isIterable(data)) {
+          print([data]);
+          scrollToBottom();
+          original.table?.apply(console, args);
 
-    debug: unsupported("debug"),
-    dir: unsupported("dir"),
-    dirxml: unsupported("dirxml"),
-    table: unsupported("table"),
-    timeStamp: unsupported("timeStamp"),
-    trace: unsupported("trace"),
-  });
+          return;
+        }
+        const table = Object.assign(document.createElement("table"), {
+          className: "OSLogger-Table",
+        });
+        const tHead = document.createElement("thead");
+        const tBody = document.createElement("tbody");
+        table.append(tHead, tBody);
+        const tHeadTr = document.createElement("tr");
+        tHead.appendChild(tHeadTr);
+
+        const INDEX = {};
+        const VALUE = {};
+
+        const keysSet = new Set([INDEX, ...(keys ?? [])]);
+        let withValue = false;
+
+        tHeadTr.append(
+          ...Array.from(keysSet).map((key) =>
+            Object.assign(document.createElement("th"), {
+              textContent: key === INDEX ? "(index)" : key,
+            })
+          )
+        );
+
+        Object.entries(data).forEach(([index, row]) => {
+          const tr = document.createElement("tr");
+          tBody.appendChild(tr);
+
+          tr.append(
+            ...Array.from(keysSet).map((key) => {
+              if (key === INDEX) {
+                const [textContent, type] = getView(index);
+                return Object.assign(document.createElement("td"), {
+                  className: `OSLogger-${
+                    Array.isArray(data) ? "Number" : type
+                  }`,
+                  textContent,
+                });
+              }
+              if (key === VALUE) {
+                if (isIterable(row)) {
+                  return document.createElement("td");
+                }
+                const [textContent, type] = getView(row);
+                return Object.assign(document.createElement("td"), {
+                  className: `OSLogger-${type}`,
+                  textContent,
+                });
+              }
+              if (!row || !Object.hasOwnProperty.call(row, key)) {
+                return document.createElement("td");
+              }
+              const [textContent, type] = getView(row[key]);
+              return Object.assign(document.createElement("td"), {
+                className: `OSLogger-${type}`,
+                textContent,
+              });
+            })
+          );
+
+          if (keys) {
+            return;
+          }
+
+          if (isIterable(row)) {
+            Object.keys(row).forEach((key) => {
+              if (keysSet.has(key)) {
+                return;
+              }
+              keysSet.add(key);
+              tHeadTr.appendChild(
+                Object.assign(document.createElement("th"), {
+                  textContent: key,
+                })
+              );
+              const [textContent, type] = getView(row[key]);
+              tr.appendChild(
+                Object.assign(document.createElement("td"), {
+                  className: `OSLogger-${type}`,
+                  textContent,
+                })
+              );
+            });
+
+            return;
+          }
+
+          if (withValue) {
+            return;
+          }
+
+          keysSet.add(VALUE);
+          withValue = true;
+          tHeadTr.appendChild(
+            Object.assign(document.createElement("th"), {
+              textContent: "(value)",
+            })
+          );
+          const [textContent, type] = getView(row);
+          tr.appendChild(
+            Object.assign(document.createElement("td"), {
+              className: `OSLogger-${type}`,
+              textContent,
+            })
+          );
+        });
+
+        slot.appendChild(table);
+        scrollToBottom();
+
+        original.table?.apply(console, args);
+      },
+    }
+  );
 
   const onLoad = () => {
     document.body.appendChild(loggerRoot);
