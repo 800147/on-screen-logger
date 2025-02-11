@@ -54,16 +54,24 @@
       </p>
 
       <p>
-        <button type="button" onclick="console.log('console.log')">
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log('console.log')"
+        >
           console.log
         </button>
-        — console.log('console.log');
+        — <code>console.log('console.log');</code>
       </p>
       <p>
-        <button type="button" onclick="console.info('console.info')">
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.info('console.info')"
+        >
           console.info
         </button>
-        — console.info('console.info');
+        — <code>console.info('console.info');</code>
       </p>
       <p>
         <button
@@ -73,7 +81,7 @@
         >
           console.warn
         </button>
-        — console.warn('console.warn');
+        — <code>console.warn('console.warn');</code>
       </p>
       <p>
         <button
@@ -83,80 +91,146 @@
         >
           console.error
         </button>
-        — console.error('console.error');
+        — <code>console.error('console.error');</code>
       </p>
       <hr />
       <p>
-        <button type="button" onclick="console.log('one', 2, 'tree', 4)">
-          multiple arguments
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.assert(0 / 0, 'Not a number')"
+        >
+          console.assert
         </button>
-        — console.log('one', 2, 'tree', 4);
+        — <code>console.assert(0 / 0, 'Not a number');</code>
       </p>
+      <hr />
       <p>
-        <button type="button" onclick="console.log(['one', 2, 'tree', 4])">
-          array
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.count()"
+        >
+          console.count
         </button>
-        — console.log(['one', 2, 'tree', 4]);
+        — <code>console.count();</code>
       </p>
       <p>
         <button
           type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.countReset()"
+        >
+          console.countReset
+        </button>
+        — <code>console.countReset();</code>
+      </p>
+      <hr />
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.time()"
+        >
+          console.time
+        </button>
+        — <code>console.time();</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.timeLog()"
+        >
+          console.timeLog
+        </button>
+        — <code>console.timeLog();</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.timeEnd()"
+        >
+          console.timeEnd
+        </button>
+        — <code>console.timeEnd();</code>
+      </p>
+      <hr />
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log('one', 2, 'tree', 4)"
+        >
+          multiple arguments
+        </button>
+        — <code>console.log('one', 2, 'tree', 4);</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log(['one', 2, 'tree', 4])"
+        >
+          array
+        </button>
+        — <code>console.log(['one', 2, 'tree', 4]);</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
           onclick="console.log({one: 1, two: [2], three: {three: 3}})"
         >
           object
         </button>
-        — console.log({one: 1, two: [2], three: {three: 3}});
+        — <code>console.log({one: 1, two: [2], three: {three: 3}});</code>
       </p>
       <p>
-        <button type="button" onclick="console.log(new Date())">date</button>
-        — console.log(new Date());
-      </p>
-      <hr />
-      <p>
-        <button type="button" onclick="console.assert(0 / 0, 'Not a number')">
-          console.assert
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.log(new Date())"
+        >
+          date
         </button>
-        — console.assert(0 / 0, 'Not a number');
-      </p>
-      <hr />
-      <p>
-        <button type="button" onclick="console.count()">console.count</button>
-        — console.count();
+        — <code>console.log(new Date());</code>
       </p>
       <p>
-        <button type="button" onclick="console.countReset()">
-          console.countReset
+        <button
+          type="button"
+          style="--color: var(--yellow-color)"
+          onclick="console.debug('hello')"
+        >
+          unsupported method
         </button>
-        — console.countReset();
+        — <code>console.debug('hello');</code>
       </p>
-      <hr />
-
-      <p>
-        <button type="button" onclick="console.time()">console.time</button>
-        — console.time();
-      </p>
-      <p>
-        <button type="button" onclick="console.timeLog()">
-          console.timeLog
-        </button>
-        — console.timeLog();
-      </p>
-      <p>
-        <button type="button" onclick="console.timeEnd()">
-          console.timeEnd
-        </button>
-        — console.timeEnd();
-      </p>
-      <hr />
       <p>
         <button
           type="button"
           style="--color: var(--red-color)"
-          onclick="console.clear()"
+          onclick="throw new Error('Whoops!')"
         >
-          console.clear
+          unhandled error
         </button>
-        — console.clear();
+        — <code>throw new Error('Whoops!');</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--red-color)"
+          onclick="Promise.reject(new Error('Whoops!'))"
+        >
+          unhandled reject
+        </button>
+        — <code>Promise.reject(new Error('Whoops!'));</code>
+      </p>
+      <hr />
+      <p>
+        <button type="button" onclick="console.clear()">console.clear</button>
+        — <code>console.clear();</code>
       </p>
     </main>
   </body>
