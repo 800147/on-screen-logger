@@ -161,6 +161,37 @@
         <button
           type="button"
           style="--color: var(--blue-color)"
+          onclick="console.group()"
+        >
+          console.group
+        </button>
+        — <code>console.group();</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.groupCollapsed()"
+        >
+          console.groupCollapsed
+        </button>
+        — <code>console.groupCollapsed();</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.groupEnd()"
+        >
+          console.groupEnd
+        </button>
+        — <code>console.groupEnd();</code>
+      </p>
+      <hr />
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
           onclick="console.log('one', 2, 'tree', 4)"
         >
           multiple arguments
@@ -197,6 +228,7 @@
         </button>
         — <code>console.log(new Date());</code>
       </p>
+      <hr />
       <p>
         <button
           type="button"
