@@ -119,16 +119,11 @@
 
   const scrollToBottom = () => loggerRoot.scroll(0, loggerRoot.scrollHeight);
   const round1000 = (num) => Math.round(num * 1000) / 1000;
-  const isIterable = (obj) => {
-    if (typeof obj === "string") {
-      return false;
-    }
-    try {
-      return Boolean(Object.keys(obj)?.length);
-    } catch (e) {
-      return false;
-    }
-  };
+  const isCollection = (obj) =>
+    Array.isArray(obj) ||
+    obj instanceof Set ||
+    obj instanceof Map ||
+    String(obj) === "[object Object]";
   const getView = (arg, unsupported) => {
     if (arg === null) {
       return ["null", "Null"];
@@ -317,7 +312,7 @@
             "(value)": v,
           }));
         }
-        if (!isIterable(data)) {
+        if (!isCollection(data)) {
           print([data]);
           scrollToBottom();
           original.table?.apply(console, args);
@@ -363,7 +358,7 @@
                 });
               }
               if (key === VALUE) {
-                if (isIterable(row)) {
+                if (isCollection(row)) {
                   return document.createElement("td");
                 }
                 const [textContent, type] = getView(row);
@@ -372,7 +367,7 @@
                   textContent,
                 });
               }
-              if (!row || !Object.hasOwnProperty.call(row, key)) {
+              if (!isCollection(row) || !Object.hasOwnProperty.call(row, key)) {
                 return document.createElement("td");
               }
               const [textContent, type] = getView(row[key]);
@@ -387,7 +382,7 @@
             return;
           }
 
-          if (isIterable(row)) {
+          if (isCollection(row)) {
             Object.keys(row).forEach((key) => {
               if (keysSet.has(key)) {
                 return;

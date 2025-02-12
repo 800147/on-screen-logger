@@ -98,14 +98,30 @@
         <button
           type="button"
           style="--color: var(--blue-color)"
-          onclick="console.table([{ name: 'Alice', age: 24 }, { name: 'Bob', age: 26 }])"
+          onclick="console.table([{ name: 'Alice', age: 24, cat: 'Dinah' }, { name: 'Bob', age: 26, dog: 'Buddy' }, 'Clementine'])"
         >
           console.table
         </button>
         —
         <code
-          >console.table([{ name: 'Alice', age: 24 }, { name: 'Bob', age: 26
-          }]);</code
+          >console.table([<br />&nbsp;&nbsp;{ name: 'Alice', age: 24, cat:
+          'Dinah' }, <br />&nbsp;&nbsp;{ name: 'Bob', age: 26, dog: 'Buddy'
+          },<br />&nbsp;&nbsp;'Clementine'<br />]);</code
+        >
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.table({ Alice: { age: 24, cat: 'Dinah' }, Bob: { age: 26, dog: 'Buddy' }, Clementine: {} })"
+        >
+          object as table
+        </button>
+        —
+        <code
+          >console.table({<br />&nbsp;&nbsp;Alice: { age: 24, cat: 'Dinah' },
+          <br />&nbsp;&nbsp;Bob: { age: 26, dog: 'Buddy' },<br />&nbsp;&nbsp;Clementine:
+          {}<br />});</code
         >
       </p>
       <hr />
