@@ -430,6 +430,46 @@
 
         original.table?.apply(console, args);
       },
+      trace: (...args) => {
+        try {
+          throw new Error();
+        } catch (e) {
+          const lines = e.stack.split("\n");
+          const finalStack = [];
+          const hasTrace = /\btrace\b/;
+          const fileUrl = /(\bhttps?:\/\/.*?):\d+:\d+\b/;
+          let isExternal = false;
+          let thisFile;
+
+          lines.forEach((line) => {
+            if (!thisFile) {
+              if (hasTrace.test(line)) {
+                thisFile = fileUrl.exec(line)?.[1];
+              }
+
+              return;
+            }
+
+            if (isExternal || !line.includes(thisFile)) {
+              finalStack.push(
+                line.replace(new RegExp(`${window.location.origin}/`, "g"), "")
+              );
+
+              isExternal = true;
+            }
+          });
+
+          const finalStackString = `\n${finalStack.join("\n")}`;
+
+          print(
+            args.length
+              ? [...args, finalStackString]
+              : ["console.trace", finalStackString]
+          );
+        }
+
+        original.trace?.apply(console, args);
+      },
     }
   );
 

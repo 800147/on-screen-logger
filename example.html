@@ -263,6 +263,16 @@
       <p>
         <button
           type="button"
+          style="--color: var(--blue-color)"
+          onclick="(function hey() { console.trace('Trace below'); })()"
+        >
+          console.trace
+        </button>
+        — <code>(function hey() { console.trace('Trace below'); })();</code>
+      </p>
+      <p>
+        <button
+          type="button"
           style="--color: var(--yellow-color)"
           onclick="console.debug('hello')"
         >
