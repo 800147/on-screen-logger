@@ -108,6 +108,9 @@
 }
 `;
 
+  const regEscape =
+    RegExp.escape?.bind(RegExp) ??
+    ((str) => str.replace(/[\\+*?[^\]$(){}=!<>|:\-#]/g, "\\$&"));
   const loggerRoot = Object.assign(document.createElement("div"), {
     className: "OSLogger",
     inert: true,
@@ -452,7 +455,7 @@
 
             if (isExternal || !line.includes(thisFile)) {
               finalStack.push(
-                line.replace(new RegExp(`${window.location.origin}/`, "g"), "")
+                line.replaceAll(`${window.location.origin}/`, "")
               );
 
               isExternal = true;
@@ -495,7 +498,7 @@
     print(
       [
         `Uncaught ${error} [${url.replace(
-          new RegExp(`^${window.location.origin}/`),
+          new RegExp(`^${regEscape(window.location.origin)}/`),
           ""
         )}:${line}:${column}]`,
       ],
@@ -510,7 +513,10 @@
     print(
       [
         `Uncaught (in promise) ${reason}\n${stack.replace(
-          new RegExp(`^${reason}\n|${window.location.origin}/`, "g"),
+          new RegExp(
+            `^${regEscape(reason)}\n|${regEscape(window.location.origin)}/`,
+            "g"
+          ),
           ""
         )}`,
       ],
