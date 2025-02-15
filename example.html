@@ -74,6 +74,12 @@
         — <code>console.info('console.info');</code>
       </p>
       <p>
+        <button type="button" onclick="console.debug('console.debug')">
+          console.debug
+        </button>
+        — <code>console.debug('console.debug');</code>
+      </p>
+      <p>
         <button
           type="button"
           style="--color: var(--yellow-color)"
@@ -87,11 +93,32 @@
         <button
           type="button"
           style="--color: var(--red-color)"
-          onclick="console.error('console.error')"
+          onclick="console.error(new Error('console.error'))"
         >
           console.error
         </button>
-        — <code>console.error('console.error');</code>
+        — <code>console.error(new Error('console.error'));</code>
+      </p>
+      <hr />
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="(function hey() { console.trace('Trace below'); })()"
+        >
+          console.trace
+        </button>
+        — <code>(function hey() { console.trace('Trace below'); })();</code>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="--color: var(--blue-color)"
+          onclick="console.assert(0 / 0, 'Not a number')"
+        >
+          console.assert
+        </button>
+        — <code>console.assert(0 / 0, 'Not a number');</code>
       </p>
       <hr />
       <p>
@@ -123,17 +150,6 @@
           <br />&nbsp;&nbsp;Bob: { age: 26, dog: 'Buddy' },<br />&nbsp;&nbsp;Clementine:
           {}<br />});</code
         >
-      </p>
-      <hr />
-      <p>
-        <button
-          type="button"
-          style="--color: var(--blue-color)"
-          onclick="console.assert(0 / 0, 'Not a number')"
-        >
-          console.assert
-        </button>
-        — <code>console.assert(0 / 0, 'Not a number');</code>
       </p>
       <hr />
       <p>
@@ -263,22 +279,12 @@
       <p>
         <button
           type="button"
-          style="--color: var(--blue-color)"
-          onclick="(function hey() { console.trace('Trace below'); })()"
-        >
-          console.trace
-        </button>
-        — <code>(function hey() { console.trace('Trace below'); })();</code>
-      </p>
-      <p>
-        <button
-          type="button"
           style="--color: var(--yellow-color)"
-          onclick="console.debug('hello')"
+          onclick="console.profile('hello')"
         >
           unsupported method
         </button>
-        — <code>console.debug('hello');</code>
+        — <code>console.profile('hello');</code>
       </p>
       <p>
         <button

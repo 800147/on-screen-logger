@@ -30,6 +30,10 @@
   background-color: white;
 }
 
+.OSLogger-Record_type_debug .OSLogger-RecordContent {
+  color: grey;
+}
+
 .OSLogger-Record_type_warn .OSLogger-RecordContent {
   color: brown;
   background-color: cornsilk;
@@ -132,6 +136,8 @@
       return ["null", "Null"];
     } else if (arg === undefined) {
       return ["undefined", "Undefined"];
+    } else if (arg instanceof Error) {
+      return [`${String(arg)}${getTraceToOSLogger()}`, "Error"];
     } else if (Array.isArray(arg)) {
       return [JSON.stringify(arg), "Array"];
     } else if (typeof arg === "string") {
@@ -217,6 +223,37 @@
     print([`Group${groupName}${collapseMessage}`]);
   };
 
+  const getTraceToOSLogger = () => {
+    try {
+      throw new Error();
+    } catch (e) {
+      const lines = e.stack.split("\n");
+      const finalStack = [];
+      const hasTrace = /\bgetTraceToOSLogger\b/;
+      const fileUrl = /(\bhttps?:\/\/.*?):\d+:\d+\b/;
+      let isExternal = false;
+      let thisFile;
+
+      lines.forEach((line) => {
+        if (!thisFile) {
+          if (hasTrace.test(line)) {
+            thisFile = fileUrl.exec(line)?.[1];
+          }
+
+          return;
+        }
+
+        if (isExternal || !line.includes(thisFile)) {
+          finalStack.push(line.replaceAll(`${window.location.origin}/`, ""));
+
+          isExternal = true;
+        }
+      });
+
+      return `\n${finalStack.join("\n")}`;
+    }
+  };
+
   Object.assign(
     console,
     Object.fromEntries(
@@ -233,29 +270,43 @@
         print(args, { type: "log" });
         original.log?.apply(console, args);
       },
-      error: (...args) => {
-        print(args, { type: "error" });
-        original.error?.apply(console, args);
-      },
       info: (...args) => {
         print(args, { type: "info" });
         original.info?.apply(console, args);
+      },
+      debug: (...args) => {
+        print(args, { type: "debug" });
+        original.debug?.apply(console, args);
       },
       warn: (...args) => {
         print(args, { type: "warn" });
         original.warn?.apply(console, args);
       },
-      clear: (...args) => {
-        loggerRoot.textContent = "";
-        slot = loggerRoot;
-        original.clear?.apply(console, args);
+      error: (...args) => {
+        print(args, { type: "error" });
+        original.error?.apply(console, args);
+      },
+      trace: (...args) => {
+        print(
+          args.length
+            ? [...args, getTraceToOSLogger()]
+            : ["console.trace", getTraceToOSLogger()]
+        );
+        original.trace?.apply(console, args);
       },
       assert: (...args) => {
         const [flag, ...rest] = args;
         if (!flag) {
-          print(["Assertion failed:", ...rest], { type: "error" });
+          print(["Assertion failed:", ...rest, getTraceToOSLogger()], {
+            type: "error",
+          });
         }
         original.assert?.apply(console, args);
+      },
+      clear: (...args) => {
+        loggerRoot.textContent = "";
+        slot = loggerRoot;
+        original.clear?.apply(console, args);
       },
       count: (...args) => {
         const label = args[0] ?? "dafault";
@@ -433,46 +484,6 @@
 
         original.table?.apply(console, args);
       },
-      trace: (...args) => {
-        try {
-          throw new Error();
-        } catch (e) {
-          const lines = e.stack.split("\n");
-          const finalStack = [];
-          const hasTrace = /\btrace\b/;
-          const fileUrl = /(\bhttps?:\/\/.*?):\d+:\d+\b/;
-          let isExternal = false;
-          let thisFile;
-
-          lines.forEach((line) => {
-            if (!thisFile) {
-              if (hasTrace.test(line)) {
-                thisFile = fileUrl.exec(line)?.[1];
-              }
-
-              return;
-            }
-
-            if (isExternal || !line.includes(thisFile)) {
-              finalStack.push(
-                line.replaceAll(`${window.location.origin}/`, "")
-              );
-
-              isExternal = true;
-            }
-          });
-
-          const finalStackString = `\n${finalStack.join("\n")}`;
-
-          print(
-            args.length
-              ? [...args, finalStackString]
-              : ["console.trace", finalStackString]
-          );
-        }
-
-        original.trace?.apply(console, args);
-      },
     }
   );
 
@@ -514,7 +525,9 @@
       [
         `Uncaught (in promise) ${reason}\n${stack.replace(
           new RegExp(
-            `^${regEscape(reason)}\n|${regEscape(window.location.origin)}/`,
+            `^${regEscape(String(reason))}\n|${regEscape(
+              window.location.origin
+            )}/`,
             "g"
           ),
           ""
