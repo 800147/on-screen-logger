@@ -137,7 +137,20 @@
     } else if (arg === undefined) {
       return ["undefined", "Undefined"];
     } else if (arg instanceof Error) {
-      return [`${String(arg)}${getTraceToOSLogger()}`, "Error"];
+      const errorString = String(arg);
+
+      return [
+        `${errorString}\n${arg.stack.replace(
+          new RegExp(
+            `^${regEscape(errorString)}\n|${regEscape(
+              window.location.origin
+            )}/`,
+            "g"
+          ),
+          ""
+        )}`,
+        "Error",
+      ];
     } else if (Array.isArray(arg)) {
       return [JSON.stringify(arg), "Array"];
     } else if (typeof arg === "string") {
