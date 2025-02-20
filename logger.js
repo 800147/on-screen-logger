@@ -14,14 +14,14 @@
   scroll-behavior: smooth;
 }
 
-.OSLogger-Record {
+.OSLogger-Message {
   font: inherit;
   margin: 0.5em;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-.OSLogger-RecordContent {
+.OSLogger-MessageContent {
   box-decoration-break: clone;
   border-radius: 0.25em;
   padding: 0 0.25em;
@@ -30,16 +30,16 @@
   background-color: white;
 }
 
-.OSLogger-Record_type_debug .OSLogger-RecordContent {
+.OSLogger-Message_level_debug .OSLogger-MessageContent {
   color: grey;
 }
 
-.OSLogger-Record_type_warn .OSLogger-RecordContent {
+.OSLogger-Message_level_warn .OSLogger-MessageContent {
   color: brown;
   background-color: cornsilk;
 }
 
-.OSLogger-Record_type_error .OSLogger-RecordContent {
+.OSLogger-Message_level_error .OSLogger-MessageContent {
   color: darkred;
   background-color: pink;
 }
@@ -167,17 +167,17 @@
     }
   };
 
-  const print = (args, { unsupported, type = "log" } = {}) => {
+  const print = (args, { unsupported, level = "log" } = {}) => {
     if (unsupported) {
-      type = "warn";
+      level = "warn";
     }
 
     const p = Object.assign(document.createElement("p"), {
-      className: `OSLogger-Record OSLogger-Record_type_${type}`,
+      className: `OSLogger-Message OSLogger-Message_level_${level}`,
     });
 
     const content = Object.assign(document.createElement("span"), {
-      className: "OSLogger-RecordContent",
+      className: "OSLogger-MessageContent",
     });
 
     p.appendChild(content);
@@ -212,7 +212,7 @@
 
   const timeLog = (label = "dafault", isEnd) => {
     if (timers[label] === undefined) {
-      print([`Timer "${label}" doesn't exist`], { type: "warn" });
+      print([`Timer "${label}" doesn't exist`], { level: "warn" });
     } else {
       print([
         `${label}: ${round1000(performance.now() - timers[label])}ms${
@@ -230,10 +230,10 @@
       className: "OSLogger-Group",
     });
     const groupName = label ? ` "${label}"` : "";
-    const collapseMessage = isCollapse ? " (couldn't collapse)" : "";
+    const collapseWarn = isCollapse ? " (couldn't collapse)" : "";
     slot.appendChild(groupEl);
     slot = groupEl;
-    print([`Group${groupName}${collapseMessage}`]);
+    print([`Group${groupName}${collapseWarn}`]);
   };
 
   const getTraceToOSLogger = () => {
@@ -280,23 +280,23 @@
     ),
     {
       log: (...args) => {
-        print(args, { type: "log" });
+        print(args, { level: "log" });
         original.log?.apply(console, args);
       },
       info: (...args) => {
-        print(args, { type: "info" });
+        print(args, { level: "info" });
         original.info?.apply(console, args);
       },
       debug: (...args) => {
-        print(args, { type: "debug" });
+        print(args, { level: "debug" });
         original.debug?.apply(console, args);
       },
       warn: (...args) => {
-        print(args, { type: "warn" });
+        print(args, { level: "warn" });
         original.warn?.apply(console, args);
       },
       error: (...args) => {
-        print(args, { type: "error" });
+        print(args, { level: "error" });
         original.error?.apply(console, args);
       },
       trace: (...args) => {
@@ -311,7 +311,7 @@
         const [flag, ...rest] = args;
         if (!flag) {
           print(["Assertion failed:", ...rest, getTraceToOSLogger()], {
-            type: "error",
+            level: "error",
           });
         }
         original.assert?.apply(console, args);
@@ -330,7 +330,7 @@
       countReset: (...args) => {
         const label = args[0] ?? "dafault";
         if (counts[label] === undefined) {
-          print([`Counter "${label}" doesn't exist`], { type: "warn" });
+          print([`Counter "${label}" doesn't exist`], { level: "warn" });
         } else {
           counts[label] = 0;
           print([`${label}:`, counts[label]]);
@@ -340,7 +340,7 @@
       time: (...args) => {
         const label = args[0] ?? "dafault";
         if (timers[label] !== undefined) {
-          print([`Timer "${label}" already exists`], { type: "warn" });
+          print([`Timer "${label}" already exists`], { level: "warn" });
         } else {
           timers[label] = performance.now();
         }
@@ -526,7 +526,7 @@
           ""
         )}:${line}:${column}]`,
       ],
-      { type: "error" }
+      { level: "error" }
     );
 
     oldWindowOnError?.call(window, error, url, line, column, ...rest);
@@ -547,7 +547,7 @@
         )}`,
       ],
       {
-        type: "error",
+        level: "error",
       }
     );
   });
